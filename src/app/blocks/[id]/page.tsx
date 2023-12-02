@@ -2,13 +2,20 @@ import { db } from "@/db";
 import Link from "next/link";
 
 async function GetData({ params }: any) {
-  "use server";
   const block = await db.block.findUnique({
     where: {
       id: parseInt(params.id),
     },
   });
-  console.log("block", block);
+  async function deleateBlock() {
+    const deleateOne = await db.block.delete({
+      where: {
+        id: parseInt(params.id),
+      },
+    });
+    window.location.href = "/";
+  }
+
   return (
     <>
       <h1 className="font-bold m-2 p-2">Detail page</h1>
@@ -26,7 +33,7 @@ async function GetData({ params }: any) {
       </p>
       <div className="flex">
         <Link
-          href={{ pathname: "/edit", query: { Id: params.id } }}
+          href={`/blocks/${params.id}/edit`}
           className="rounded bg-teal-800 w-1/6 text-white p-2 m-2 border roundeds"
         >
           Edit
@@ -37,12 +44,12 @@ async function GetData({ params }: any) {
         >
           Back
         </Link>
-        <Link
-          href={`/blocks/delete?id=${params.id}`}
+        <button
+          //   onDelete={deleateBlock}
           className="rounded bg-teal-800 w-1/6 text-white p-2 m-2 border roundeds"
         >
           Delete
-        </Link>
+        </button>
       </div>
     </>
   );
